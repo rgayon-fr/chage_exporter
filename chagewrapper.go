@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"os/exec"
 	"regexp"
 	"strings"
@@ -21,9 +20,10 @@ func (c *ChageStruct) UntilExpiryDate() time.Duration {
 	// Default time
 	defaultTime := time.Time{}
 
-	// Return a duration of -1 if the password never expires.
+	// Return a duration of 0 if the password never expires.
+	// NOTE: Changed from -1 to remove useless complexity.
 	if c.PasswordExpireDate == defaultTime {
-		return time.Duration(-1)
+		return time.Duration(0)
 	}
 
 	return time.Until(c.PasswordExpireDate)
@@ -59,7 +59,6 @@ func GetChage(u string) (ChageStruct, error) {
 	chageOutputStruct.User = u
 
 	chageCommand := exec.Command("chage", "-l", "-i", u)
-	log.Printf("Command is: '%s'", chageCommand.String())
 	chageOutput, chageError := chageCommand.CombinedOutput()
 	if chageError != nil {
 		return ChageStruct{}, fmt.Errorf("error running the chage command: %s", chageError)
