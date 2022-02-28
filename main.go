@@ -13,6 +13,7 @@ import (
 var (
 	// Port number to listen on
 	port       = kingpin.Flag("port", "Port for chage_exporter to listen on.").Short('p').Default("9200").Int()
+	targetIp   = kingpin.Flag("ip", "Ip for chage_exporter to listen on.").Short('i').Default("0.0.0.0").String()
 	configPath = kingpin.Flag("config", "Path to chage_exporter config.").Short('c').Required().ExistingFile()
 
 	relevantUsers []string
@@ -98,7 +99,7 @@ func main() {
 	http.HandleFunc("/metrics", handleMetricsRequest)
 
 	// Listen for HTTP request
-	httpError := http.ListenAndServe(fmt.Sprintf(":%d", *port), nil)
+	httpError := http.ListenAndServe(fmt.Sprintf("%s:%d", *targetIp, *port), nil)
 	if httpError != nil {
 		log.Fatalf("error starting http server: %s", httpError)
 	}
