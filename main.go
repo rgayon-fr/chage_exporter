@@ -73,6 +73,8 @@ func main() {
 	// Parse args
 	kingpin.Parse()
 
+	log.Println("chage_exporter starting...")
+
 	// Parse configuration file.
 
 	// Init configuration structure
@@ -96,7 +98,8 @@ func main() {
 	http.HandleFunc("/metrics", handleMetricsRequest)
 
 	// Listen for HTTP request
-	http.ListenAndServe(fmt.Sprintf(":%d", *port), nil)
-
-	log.Println("chage_exporter")
+	httpError := http.ListenAndServe(fmt.Sprintf(":%d", *port), nil)
+	if httpError != nil {
+		log.Fatalf("error starting http server: %s", httpError)
+	}
 }
